@@ -1,0 +1,21 @@
+syntax = "proto3";
+package tinker.v1;
+
+service AgentService {
+  rpc GetInfo(GetInfoRequest) returns (GetInfoResponse);
+  rpc WatchHostStats(WatchHostStatsRequest) returns (stream WatchHostStatsResponse);
+}
+
+message GetInfoRequest {}
+message GetInfoResponse {
+  string agent_version = 1;
+  string hostname = 2;
+  string os = 3;
+}
+
+message WatchHostStatsRequest {}
+message WatchHostStatsResponse {
+  double cpu_percent = 1;
+  uint64 mem_used_bytes = 2;
+  uint64 mem_total_bytes = 3;
+}
