@@ -19,17 +19,17 @@ import (
 var validID = regexp.MustCompile(`^[a-z0-9-]{1,40}$`)
 
 var (
-	ErrBadID = errors.New("server id may only use a-z, 0-9 and -")
-	ErrNoJar = errors.New("server.jar not found in the server folder")
+	ErrBadID          = errors.New("server id may only use a-z, 0-9 and -")
+	ErrNoJar          = errors.New("server.jar not found in the server folder")
 	ErrAlreadyRunning = errors.New("server is already running")
-	ErrNotRunning = errors.New("server is not running")
+	ErrNotRunning     = errors.New("server is not running")
 )
 
 // Manager keeps track of every Minecraft server on this machine.
 type Manager struct {
 	Root string // folder that holds on sub-folder per server
 
-	mu sync.Mutex
+	mu      sync.Mutex
 	servers map[string]*server
 }
 
@@ -40,10 +40,11 @@ func NewManager(root string) *Manager {
 // server is one Minecraft server: its process, its console history and
 // everyone currently watching its console.
 type server struct {
-	mu sync.Mutex
-	running bool
-	cm *exec.Cmd
-	history []string
+	mu       sync.Mutex
+	running  bool
+	cmd      *exec.Cmd
+	stdin    io.WriteCloser
+	history  []string
 	watchers map[chan string]bool
 }
 
@@ -89,24 +90,39 @@ func (m *Manager) Start(id string) error {
 		return ErrAlreadyRunning
 	}
 
-	cmd := exec.Command("java", "-Xms1G". "-Xmx4G", "-jar", "server.jar", "nogui")
+	cmd := exec.Command("java", "-Xms1G", "-Xmx4G", "-jar", "server.jar", "nogui")
 	cmd.Dir = dir
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return err
 	}
-	cmd.Stderr = cmd.Stdout // errrors go to the same console
-	if err := cmd.Start(; err != nil {
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return err
+	}
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		return err
+	}
+	if err := cmd.Start(); err != nil {
 		return fmt.Errorf("could not start java: %w", err)
 	}
 	s.cmd, s.stdin, s.running = cmd, stdin, true
 
 	// Read the console line by line in the background
 	go func() {
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan( {
-			s.publish(scanner.Text())
+		var readers sync.WaitGroup
+		readOutput := func(output io.Reader) {
+			defer readers.Done()
+			scanner := bufio.NewScanner(output)
+			for scanner.Scan() {
+				s.publish(scanner.Text())
+			}
 		}
+		readers.Add(2)
+		go readOutput(stdout)
+		go readOutput(stderr)
+		readers.Wait()
 		err := cmd.Wait() // the process has exited
 		s.mu.Lock()
 		s.running = false
@@ -123,7 +139,7 @@ func (m *Manager) Start(id string) error {
 // Stop asks Minecraft to save and shut down. If it hasn't stopped
 // after 60 seconds, the process is killed.
 func (m *Manager) Stop(id string) error {
-	if err := m.Send(id, "stop"); err!= nil {
+	if err := m.Send(id, "stop"); err != nil {
 		return err
 	}
 	s, _ := m.get(id)

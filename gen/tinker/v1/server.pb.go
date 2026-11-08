@@ -412,6 +412,7 @@ func (x *WatchConsoleRequest) GetServerId() string {
 type WatchConsoleResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ServerId      string                 `protobuf:"bytes,1,opt,name=server_id,json=serverId,proto3" json:"server_id,omitempty"`
+	Line          string                 `protobuf:"bytes,2,opt,name=line,proto3" json:"line,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -453,6 +454,13 @@ func (x *WatchConsoleResponse) GetServerId() string {
 	return ""
 }
 
+func (x *WatchConsoleResponse) GetLine() string {
+	if x != nil {
+		return x.Line
+	}
+	return ""
+}
+
 var File_tinker_v1_server_proto protoreflect.FileDescriptor
 
 const file_tinker_v1_server_proto_rawDesc = "" +
@@ -475,9 +483,10 @@ const file_tinker_v1_server_proto_rawDesc = "" +
 	"\acommand\x18\x02 \x01(\tR\acommand\"\x15\n" +
 	"\x13SendCommandResponse\"2\n" +
 	"\x13WatchConsoleRequest\x12\x1b\n" +
-	"\tserver_id\x18\x01 \x01(\tR\bserverId\"3\n" +
+	"\tserver_id\x18\x01 \x01(\tR\bserverId\"G\n" +
 	"\x14WatchConsoleResponse\x12\x1b\n" +
-	"\tserver_id\x18\x01 \x01(\tR\bserverId2\xa3\x03\n" +
+	"\tserver_id\x18\x01 \x01(\tR\bserverId\x12\x12\n" +
+	"\x04line\x18\x02 \x01(\tR\x04line2\xa3\x03\n" +
 	"\rServerService\x12X\n" +
 	"\x0fGetServerStatus\x12!.tinker.v1.GetServerStatusRequest\x1a\".tinker.v1.GetServerStatusResponse\x12L\n" +
 	"\vStartServer\x12\x1d.tinker.v1.StartServerRequest\x1a\x1e.tinker.v1.StartServerResponse\x12I\n" +

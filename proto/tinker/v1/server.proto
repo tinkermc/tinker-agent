@@ -39,4 +39,5 @@ message WatchConsoleRequest {
 }
 message WatchConsoleResponse {
     string server_id = 1;
+    string line = 2;
 }
