@@ -24,6 +24,15 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// ServerServiceListServersProcedure is the procedure name of the ServerService's ListServers RPC.
+	ServerServiceListServersProcedure = "/tinker.v1.ServerService/ListServers"
+	// ServerServiceCreateServerProcedure is the procedure name of the ServerService's CreateServer RPC.
+	ServerServiceCreateServerProcedure = "/tinker.v1.ServerService/CreateServer"
+	// ServerServiceFindImportableServersProcedure is the procedure name of the ServerService's
+	// FindImportableServers RPC.
+	ServerServiceFindImportableServersProcedure = "/tinker.v1.ServerService/FindImportableServers"
+	// ServerServiceImportServerProcedure is the procedure name of the ServerService's ImportServer RPC.
+	ServerServiceImportServerProcedure = "/tinker.v1.ServerService/ImportServer"
 	// ServerServiceGetServerStatusProcedure is the procedure name of the ServerService's
 	// GetServerStatus RPC.
 	ServerServiceGetServerStatusProcedure = "/tinker.v1.ServerService/GetServerStatus"
@@ -38,6 +47,34 @@ const (
 )
 
 var (
+	serverServiceListServersSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType: connect.StreamTypeUnary,
+			Schema:     v1.File_tinker_v1_server_proto.Services().ByName("ServerService").Methods().ByName("ListServers"),
+			Procedure:  ServerServiceListServersProcedure,
+		}
+	})
+	serverServiceCreateServerSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType: connect.StreamTypeUnary,
+			Schema:     v1.File_tinker_v1_server_proto.Services().ByName("ServerService").Methods().ByName("CreateServer"),
+			Procedure:  ServerServiceCreateServerProcedure,
+		}
+	})
+	serverServiceFindImportableServersSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType: connect.StreamTypeUnary,
+			Schema:     v1.File_tinker_v1_server_proto.Services().ByName("ServerService").Methods().ByName("FindImportableServers"),
+			Procedure:  ServerServiceFindImportableServersProcedure,
+		}
+	})
+	serverServiceImportServerSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType: connect.StreamTypeUnary,
+			Schema:     v1.File_tinker_v1_server_proto.Services().ByName("ServerService").Methods().ByName("ImportServer"),
+			Procedure:  ServerServiceImportServerProcedure,
+		}
+	})
 	serverServiceGetServerStatusSpec = sync.OnceValue(func() connect.Spec {
 		return connect.Spec{
 			StreamType: connect.StreamTypeUnary,
@@ -77,6 +114,12 @@ var (
 
 // ServerServiceClient is a client for the tinker.v1.ServerService service.
 type ServerServiceClient interface {
+	// --- New in Part 2 ---
+	ListServers(context.Context, *v1.ListServersRequest) (*v1.ListServersResponse, error)
+	CreateServer(context.Context, *v1.CreateServerRequest) (*v1.CreateServerResponse, error)
+	FindImportableServers(context.Context, *v1.FindImportableServersRequest) (*v1.FindImportableServersResponse, error)
+	ImportServer(context.Context, *v1.ImportServerRequest) (*v1.ImportServerResponse, error)
+	// --- From Part 1 (unchanged) ---
 	GetServerStatus(context.Context, *v1.GetServerStatusRequest) (*v1.GetServerStatusResponse, error)
 	StartServer(context.Context, *v1.StartServerRequest) (*v1.StartServerResponse, error)
 	StopServer(context.Context, *v1.StopServerRequest) (*v1.StopServerResponse, error)
@@ -113,6 +156,12 @@ func (s ServerServiceWatchConsoleClientStream) Close() error {
 
 // ServerServiceHandler is an implementation of the tinker.v1.ServerService service.
 type ServerServiceHandler interface {
+	// --- New in Part 2 ---
+	ListServers(context.Context, *v1.ListServersRequest) (*v1.ListServersResponse, error)
+	CreateServer(context.Context, *v1.CreateServerRequest) (*v1.CreateServerResponse, error)
+	FindImportableServers(context.Context, *v1.FindImportableServersRequest) (*v1.FindImportableServersResponse, error)
+	ImportServer(context.Context, *v1.ImportServerRequest) (*v1.ImportServerResponse, error)
+	// --- From Part 1 (unchanged) ---
 	GetServerStatus(context.Context, *v1.GetServerStatusRequest) (*v1.GetServerStatusResponse, error)
 	StartServer(context.Context, *v1.StartServerRequest) (*v1.StartServerResponse, error)
 	StopServer(context.Context, *v1.StopServerRequest) (*v1.StopServerResponse, error)
@@ -125,6 +174,10 @@ type ServerServiceHandler interface {
 func RegisterServerServiceHandler(server *connect.Server, svc ServerServiceHandler) {
 	adapter := serverServiceHandler{svc: svc}
 	server.Register(
+		connect.Method{Spec: serverServiceListServersSpec(), Handler: adapter.listServers},
+		connect.Method{Spec: serverServiceCreateServerSpec(), Handler: adapter.createServer},
+		connect.Method{Spec: serverServiceFindImportableServersSpec(), Handler: adapter.findImportableServers},
+		connect.Method{Spec: serverServiceImportServerSpec(), Handler: adapter.importServer},
 		connect.Method{Spec: serverServiceGetServerStatusSpec(), Handler: adapter.getServerStatus},
 		connect.Method{Spec: serverServiceStartServerSpec(), Handler: adapter.startServer},
 		connect.Method{Spec: serverServiceStopServerSpec(), Handler: adapter.stopServer},
@@ -152,6 +205,22 @@ func (s ServerServiceWatchConsoleServerStream) Send(res *v1.WatchConsoleResponse
 // UnimplementedServerServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedServerServiceHandler struct{}
 
+func (UnimplementedServerServiceHandler) ListServers(context.Context, *v1.ListServersRequest) (*v1.ListServersResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "tinker.v1.ServerService.ListServers is not implemented")
+}
+
+func (UnimplementedServerServiceHandler) CreateServer(context.Context, *v1.CreateServerRequest) (*v1.CreateServerResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "tinker.v1.ServerService.CreateServer is not implemented")
+}
+
+func (UnimplementedServerServiceHandler) FindImportableServers(context.Context, *v1.FindImportableServersRequest) (*v1.FindImportableServersResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "tinker.v1.ServerService.FindImportableServers is not implemented")
+}
+
+func (UnimplementedServerServiceHandler) ImportServer(context.Context, *v1.ImportServerRequest) (*v1.ImportServerResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "tinker.v1.ServerService.ImportServer is not implemented")
+}
+
 func (UnimplementedServerServiceHandler) GetServerStatus(context.Context, *v1.GetServerStatusRequest) (*v1.GetServerStatusResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, "tinker.v1.ServerService.GetServerStatus is not implemented")
 }
@@ -174,6 +243,38 @@ func (UnimplementedServerServiceHandler) WatchConsole(context.Context, *v1.Watch
 
 type serverServiceClient struct {
 	client *connect.Client
+}
+
+func (c *serverServiceClient) ListServers(ctx context.Context, req *v1.ListServersRequest) (*v1.ListServersResponse, error) {
+	var res v1.ListServersResponse
+	if err := c.client.CallUnary(ctx, serverServiceListServersSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (c *serverServiceClient) CreateServer(ctx context.Context, req *v1.CreateServerRequest) (*v1.CreateServerResponse, error) {
+	var res v1.CreateServerResponse
+	if err := c.client.CallUnary(ctx, serverServiceCreateServerSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (c *serverServiceClient) FindImportableServers(ctx context.Context, req *v1.FindImportableServersRequest) (*v1.FindImportableServersResponse, error) {
+	var res v1.FindImportableServersResponse
+	if err := c.client.CallUnary(ctx, serverServiceFindImportableServersSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (c *serverServiceClient) ImportServer(ctx context.Context, req *v1.ImportServerRequest) (*v1.ImportServerResponse, error) {
+	var res v1.ImportServerResponse
+	if err := c.client.CallUnary(ctx, serverServiceImportServerSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
 }
 
 func (c *serverServiceClient) GetServerStatus(ctx context.Context, req *v1.GetServerStatusRequest) (*v1.GetServerStatusResponse, error) {
@@ -217,6 +318,54 @@ func (c *serverServiceClient) WatchConsole(ctx context.Context, req *v1.WatchCon
 }
 
 type serverServiceHandler struct{ svc ServerServiceHandler }
+
+func (h serverServiceHandler) listServers(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.ListServersRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.ListServers(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
+
+func (h serverServiceHandler) createServer(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.CreateServerRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.CreateServer(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
+
+func (h serverServiceHandler) findImportableServers(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.FindImportableServersRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.FindImportableServers(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
+
+func (h serverServiceHandler) importServer(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.ImportServerRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.ImportServer(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
 
 func (h serverServiceHandler) getServerStatus(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
 	var req v1.GetServerStatusRequest

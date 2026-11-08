@@ -21,6 +21,639 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Which kind of Minecraft server it is.
+type ServerType int32
+
+const (
+	ServerType_SERVER_TYPE_UNSPECIFIED ServerType = 0
+	ServerType_SERVER_TYPE_VANILLA     ServerType = 1 // Mojang's official server
+	ServerType_SERVER_TYPE_PAPER       ServerType = 2 // faster, supports plugins
+	ServerType_SERVER_TYPE_FABRIC      ServerType = 3 // supports Fabric mods
+	ServerType_SERVER_TYPE_OTHER       ServerType = 4 // imported, and we couldn't tell
+)
+
+// Enum value maps for ServerType.
+var (
+	ServerType_name = map[int32]string{
+		0: "SERVER_TYPE_UNSPECIFIED",
+		1: "SERVER_TYPE_VANILLA",
+		2: "SERVER_TYPE_PAPER",
+		3: "SERVER_TYPE_FABRIC",
+		4: "SERVER_TYPE_OTHER",
+	}
+	ServerType_value = map[string]int32{
+		"SERVER_TYPE_UNSPECIFIED": 0,
+		"SERVER_TYPE_VANILLA":     1,
+		"SERVER_TYPE_PAPER":       2,
+		"SERVER_TYPE_FABRIC":      3,
+		"SERVER_TYPE_OTHER":       4,
+	}
+)
+
+func (x ServerType) Enum() *ServerType {
+	p := new(ServerType)
+	*p = x
+	return p
+}
+
+func (x ServerType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ServerType) Descriptor() protoreflect.EnumDescriptor {
+	return file_tinker_v1_server_proto_enumTypes[0].Descriptor()
+}
+
+func (ServerType) Type() protoreflect.EnumType {
+	return &file_tinker_v1_server_proto_enumTypes[0]
+}
+
+func (x ServerType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ServerType.Descriptor instead.
+func (ServerType) EnumDescriptor() ([]byte, []int) {
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{0}
+}
+
+// One Minecraft server, as Dash sees it.
+type Server struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`     // folder name, like "survival"
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"` // display name, like "Survival World"
+	Type          ServerType             `protobuf:"varint,3,opt,name=type,proto3,enum=tinker.v1.ServerType" json:"type,omitempty"`
+	Version       string                 `protobuf:"bytes,4,opt,name=version,proto3" json:"version,omitempty"`                    // like "26.3" (empty if unknown)
+	MemoryMb      int32                  `protobuf:"varint,5,opt,name=memory_mb,json=memoryMb,proto3" json:"memory_mb,omitempty"` // max RAM for Java
+	Port          int32                  `protobuf:"varint,6,opt,name=port,proto3" json:"port,omitempty"`                         // the port players join on
+	Running       bool                   `protobuf:"varint,7,opt,name=running,proto3" json:"running,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Server) Reset() {
+	*x = Server{}
+	mi := &file_tinker_v1_server_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Server) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Server) ProtoMessage() {}
+
+func (x *Server) ProtoReflect() protoreflect.Message {
+	mi := &file_tinker_v1_server_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Server.ProtoReflect.Descriptor instead.
+func (*Server) Descriptor() ([]byte, []int) {
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Server) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Server) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Server) GetType() ServerType {
+	if x != nil {
+		return x.Type
+	}
+	return ServerType_SERVER_TYPE_UNSPECIFIED
+}
+
+func (x *Server) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *Server) GetMemoryMb() int32 {
+	if x != nil {
+		return x.MemoryMb
+	}
+	return 0
+}
+
+func (x *Server) GetPort() int32 {
+	if x != nil {
+		return x.Port
+	}
+	return 0
+}
+
+func (x *Server) GetRunning() bool {
+	if x != nil {
+		return x.Running
+	}
+	return false
+}
+
+type ListServersRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListServersRequest) Reset() {
+	*x = ListServersRequest{}
+	mi := &file_tinker_v1_server_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListServersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListServersRequest) ProtoMessage() {}
+
+func (x *ListServersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_tinker_v1_server_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListServersRequest.ProtoReflect.Descriptor instead.
+func (*ListServersRequest) Descriptor() ([]byte, []int) {
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{1}
+}
+
+type ListServersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Servers       []*Server              `protobuf:"bytes,1,rep,name=servers,proto3" json:"servers,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListServersResponse) Reset() {
+	*x = ListServersResponse{}
+	mi := &file_tinker_v1_server_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListServersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListServersResponse) ProtoMessage() {}
+
+func (x *ListServersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_tinker_v1_server_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListServersResponse.ProtoReflect.Descriptor instead.
+func (*ListServersResponse) Descriptor() ([]byte, []int) {
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ListServersResponse) GetServers() []*Server {
+	if x != nil {
+		return x.Servers
+	}
+	return nil
+}
+
+type CreateServerRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Type          ServerType             `protobuf:"varint,2,opt,name=type,proto3,enum=tinker.v1.ServerType" json:"type,omitempty"`     // unspecified = vanilla
+	Version       string                 `protobuf:"bytes,3,opt,name=version,proto3" json:"version,omitempty"`                          // empty = latest release
+	MemoryMb      int32                  `protobuf:"varint,4,opt,name=memory_mb,json=memoryMb,proto3" json:"memory_mb,omitempty"`       // 0 = 2048
+	Port          int32                  `protobuf:"varint,5,opt,name=port,proto3" json:"port,omitempty"`                               // 0 = first free port from 25565
+	AcceptEula    bool                   `protobuf:"varint,6,opt,name=accept_eula,json=acceptEula,proto3" json:"accept_eula,omitempty"` // the user ticked "I agree to the Minecraft EULA"
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateServerRequest) Reset() {
+	*x = CreateServerRequest{}
+	mi := &file_tinker_v1_server_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateServerRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateServerRequest) ProtoMessage() {}
+
+func (x *CreateServerRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_tinker_v1_server_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateServerRequest.ProtoReflect.Descriptor instead.
+func (*CreateServerRequest) Descriptor() ([]byte, []int) {
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *CreateServerRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateServerRequest) GetType() ServerType {
+	if x != nil {
+		return x.Type
+	}
+	return ServerType_SERVER_TYPE_UNSPECIFIED
+}
+
+func (x *CreateServerRequest) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *CreateServerRequest) GetMemoryMb() int32 {
+	if x != nil {
+		return x.MemoryMb
+	}
+	return 0
+}
+
+func (x *CreateServerRequest) GetPort() int32 {
+	if x != nil {
+		return x.Port
+	}
+	return 0
+}
+
+func (x *CreateServerRequest) GetAcceptEula() bool {
+	if x != nil {
+		return x.AcceptEula
+	}
+	return false
+}
+
+type CreateServerResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Server        *Server                `protobuf:"bytes,1,opt,name=server,proto3" json:"server,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateServerResponse) Reset() {
+	*x = CreateServerResponse{}
+	mi := &file_tinker_v1_server_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateServerResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateServerResponse) ProtoMessage() {}
+
+func (x *CreateServerResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_tinker_v1_server_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateServerResponse.ProtoReflect.Descriptor instead.
+func (*CreateServerResponse) Descriptor() ([]byte, []int) {
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CreateServerResponse) GetServer() *Server {
+	if x != nil {
+		return x.Server
+	}
+	return nil
+}
+
+type FindImportableServersRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Folder        string                 `protobuf:"bytes,1,opt,name=folder,proto3" json:"folder,omitempty"` // empty = look where Crafty Controller keeps servers
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FindImportableServersRequest) Reset() {
+	*x = FindImportableServersRequest{}
+	mi := &file_tinker_v1_server_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FindImportableServersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FindImportableServersRequest) ProtoMessage() {}
+
+func (x *FindImportableServersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_tinker_v1_server_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FindImportableServersRequest.ProtoReflect.Descriptor instead.
+func (*FindImportableServersRequest) Descriptor() ([]byte, []int) {
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *FindImportableServersRequest) GetFolder() string {
+	if x != nil {
+		return x.Folder
+	}
+	return ""
+}
+
+type ImportableServer struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Path          string                 `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"` // full folder path on the server PC
+	SuggestedName string                 `protobuf:"bytes,2,opt,name=suggested_name,json=suggestedName,proto3" json:"suggested_name,omitempty"`
+	Jar           string                 `protobuf:"bytes,3,opt,name=jar,proto3" json:"jar,omitempty"` // the jar we think starts it
+	Port          int32                  `protobuf:"varint,4,opt,name=port,proto3" json:"port,omitempty"`
+	Source        string                 `protobuf:"bytes,5,opt,name=source,proto3" json:"source,omitempty"` // "crafty" or "folder"
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ImportableServer) Reset() {
+	*x = ImportableServer{}
+	mi := &file_tinker_v1_server_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ImportableServer) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImportableServer) ProtoMessage() {}
+
+func (x *ImportableServer) ProtoReflect() protoreflect.Message {
+	mi := &file_tinker_v1_server_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ImportableServer.ProtoReflect.Descriptor instead.
+func (*ImportableServer) Descriptor() ([]byte, []int) {
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ImportableServer) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+func (x *ImportableServer) GetSuggestedName() string {
+	if x != nil {
+		return x.SuggestedName
+	}
+	return ""
+}
+
+func (x *ImportableServer) GetJar() string {
+	if x != nil {
+		return x.Jar
+	}
+	return ""
+}
+
+func (x *ImportableServer) GetPort() int32 {
+	if x != nil {
+		return x.Port
+	}
+	return 0
+}
+
+func (x *ImportableServer) GetSource() string {
+	if x != nil {
+		return x.Source
+	}
+	return ""
+}
+
+type FindImportableServersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Servers       []*ImportableServer    `protobuf:"bytes,1,rep,name=servers,proto3" json:"servers,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FindImportableServersResponse) Reset() {
+	*x = FindImportableServersResponse{}
+	mi := &file_tinker_v1_server_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FindImportableServersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FindImportableServersResponse) ProtoMessage() {}
+
+func (x *FindImportableServersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_tinker_v1_server_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FindImportableServersResponse.ProtoReflect.Descriptor instead.
+func (*FindImportableServersResponse) Descriptor() ([]byte, []int) {
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *FindImportableServersResponse) GetServers() []*ImportableServer {
+	if x != nil {
+		return x.Servers
+	}
+	return nil
+}
+
+type ImportServerRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Path          string                 `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"` // from FindImportableServers
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Jar           string                 `protobuf:"bytes,3,opt,name=jar,proto3" json:"jar,omitempty"`                            // empty = the one we detected
+	MemoryMb      int32                  `protobuf:"varint,4,opt,name=memory_mb,json=memoryMb,proto3" json:"memory_mb,omitempty"` // 0 = 2048
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ImportServerRequest) Reset() {
+	*x = ImportServerRequest{}
+	mi := &file_tinker_v1_server_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ImportServerRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImportServerRequest) ProtoMessage() {}
+
+func (x *ImportServerRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_tinker_v1_server_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ImportServerRequest.ProtoReflect.Descriptor instead.
+func (*ImportServerRequest) Descriptor() ([]byte, []int) {
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ImportServerRequest) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+func (x *ImportServerRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ImportServerRequest) GetJar() string {
+	if x != nil {
+		return x.Jar
+	}
+	return ""
+}
+
+func (x *ImportServerRequest) GetMemoryMb() int32 {
+	if x != nil {
+		return x.MemoryMb
+	}
+	return 0
+}
+
+type ImportServerResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Server        *Server                `protobuf:"bytes,1,opt,name=server,proto3" json:"server,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ImportServerResponse) Reset() {
+	*x = ImportServerResponse{}
+	mi := &file_tinker_v1_server_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ImportServerResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImportServerResponse) ProtoMessage() {}
+
+func (x *ImportServerResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_tinker_v1_server_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ImportServerResponse.ProtoReflect.Descriptor instead.
+func (*ImportServerResponse) Descriptor() ([]byte, []int) {
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ImportServerResponse) GetServer() *Server {
+	if x != nil {
+		return x.Server
+	}
+	return nil
+}
+
 type GetServerStatusRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ServerId      string                 `protobuf:"bytes,1,opt,name=server_id,json=serverId,proto3" json:"server_id,omitempty"`
@@ -30,7 +663,7 @@ type GetServerStatusRequest struct {
 
 func (x *GetServerStatusRequest) Reset() {
 	*x = GetServerStatusRequest{}
-	mi := &file_tinker_v1_server_proto_msgTypes[0]
+	mi := &file_tinker_v1_server_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +675,7 @@ func (x *GetServerStatusRequest) String() string {
 func (*GetServerStatusRequest) ProtoMessage() {}
 
 func (x *GetServerStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_tinker_v1_server_proto_msgTypes[0]
+	mi := &file_tinker_v1_server_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +688,7 @@ func (x *GetServerStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetServerStatusRequest.ProtoReflect.Descriptor instead.
 func (*GetServerStatusRequest) Descriptor() ([]byte, []int) {
-	return file_tinker_v1_server_proto_rawDescGZIP(), []int{0}
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GetServerStatusRequest) GetServerId() string {
@@ -67,15 +700,14 @@ func (x *GetServerStatusRequest) GetServerId() string {
 
 type GetServerStatusResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ServerId      string                 `protobuf:"bytes,1,opt,name=server_id,json=serverId,proto3" json:"server_id,omitempty"`
-	IsRunning     bool                   `protobuf:"varint,2,opt,name=is_running,json=isRunning,proto3" json:"is_running,omitempty"`
+	Running       bool                   `protobuf:"varint,1,opt,name=running,proto3" json:"running,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GetServerStatusResponse) Reset() {
 	*x = GetServerStatusResponse{}
-	mi := &file_tinker_v1_server_proto_msgTypes[1]
+	mi := &file_tinker_v1_server_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -87,7 +719,7 @@ func (x *GetServerStatusResponse) String() string {
 func (*GetServerStatusResponse) ProtoMessage() {}
 
 func (x *GetServerStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_tinker_v1_server_proto_msgTypes[1]
+	mi := &file_tinker_v1_server_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -100,19 +732,12 @@ func (x *GetServerStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetServerStatusResponse.ProtoReflect.Descriptor instead.
 func (*GetServerStatusResponse) Descriptor() ([]byte, []int) {
-	return file_tinker_v1_server_proto_rawDescGZIP(), []int{1}
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *GetServerStatusResponse) GetServerId() string {
+func (x *GetServerStatusResponse) GetRunning() bool {
 	if x != nil {
-		return x.ServerId
-	}
-	return ""
-}
-
-func (x *GetServerStatusResponse) GetIsRunning() bool {
-	if x != nil {
-		return x.IsRunning
+		return x.Running
 	}
 	return false
 }
@@ -126,7 +751,7 @@ type StartServerRequest struct {
 
 func (x *StartServerRequest) Reset() {
 	*x = StartServerRequest{}
-	mi := &file_tinker_v1_server_proto_msgTypes[2]
+	mi := &file_tinker_v1_server_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -138,7 +763,7 @@ func (x *StartServerRequest) String() string {
 func (*StartServerRequest) ProtoMessage() {}
 
 func (x *StartServerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_tinker_v1_server_proto_msgTypes[2]
+	mi := &file_tinker_v1_server_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -151,7 +776,7 @@ func (x *StartServerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartServerRequest.ProtoReflect.Descriptor instead.
 func (*StartServerRequest) Descriptor() ([]byte, []int) {
-	return file_tinker_v1_server_proto_rawDescGZIP(), []int{2}
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *StartServerRequest) GetServerId() string {
@@ -169,7 +794,7 @@ type StartServerResponse struct {
 
 func (x *StartServerResponse) Reset() {
 	*x = StartServerResponse{}
-	mi := &file_tinker_v1_server_proto_msgTypes[3]
+	mi := &file_tinker_v1_server_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -181,7 +806,7 @@ func (x *StartServerResponse) String() string {
 func (*StartServerResponse) ProtoMessage() {}
 
 func (x *StartServerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_tinker_v1_server_proto_msgTypes[3]
+	mi := &file_tinker_v1_server_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -194,7 +819,7 @@ func (x *StartServerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartServerResponse.ProtoReflect.Descriptor instead.
 func (*StartServerResponse) Descriptor() ([]byte, []int) {
-	return file_tinker_v1_server_proto_rawDescGZIP(), []int{3}
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{13}
 }
 
 type StopServerRequest struct {
@@ -206,7 +831,7 @@ type StopServerRequest struct {
 
 func (x *StopServerRequest) Reset() {
 	*x = StopServerRequest{}
-	mi := &file_tinker_v1_server_proto_msgTypes[4]
+	mi := &file_tinker_v1_server_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -218,7 +843,7 @@ func (x *StopServerRequest) String() string {
 func (*StopServerRequest) ProtoMessage() {}
 
 func (x *StopServerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_tinker_v1_server_proto_msgTypes[4]
+	mi := &file_tinker_v1_server_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -231,7 +856,7 @@ func (x *StopServerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StopServerRequest.ProtoReflect.Descriptor instead.
 func (*StopServerRequest) Descriptor() ([]byte, []int) {
-	return file_tinker_v1_server_proto_rawDescGZIP(), []int{4}
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *StopServerRequest) GetServerId() string {
@@ -249,7 +874,7 @@ type StopServerResponse struct {
 
 func (x *StopServerResponse) Reset() {
 	*x = StopServerResponse{}
-	mi := &file_tinker_v1_server_proto_msgTypes[5]
+	mi := &file_tinker_v1_server_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -261,7 +886,7 @@ func (x *StopServerResponse) String() string {
 func (*StopServerResponse) ProtoMessage() {}
 
 func (x *StopServerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_tinker_v1_server_proto_msgTypes[5]
+	mi := &file_tinker_v1_server_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -274,7 +899,7 @@ func (x *StopServerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StopServerResponse.ProtoReflect.Descriptor instead.
 func (*StopServerResponse) Descriptor() ([]byte, []int) {
-	return file_tinker_v1_server_proto_rawDescGZIP(), []int{5}
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{15}
 }
 
 type SendCommandRequest struct {
@@ -287,7 +912,7 @@ type SendCommandRequest struct {
 
 func (x *SendCommandRequest) Reset() {
 	*x = SendCommandRequest{}
-	mi := &file_tinker_v1_server_proto_msgTypes[6]
+	mi := &file_tinker_v1_server_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -299,7 +924,7 @@ func (x *SendCommandRequest) String() string {
 func (*SendCommandRequest) ProtoMessage() {}
 
 func (x *SendCommandRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_tinker_v1_server_proto_msgTypes[6]
+	mi := &file_tinker_v1_server_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -312,7 +937,7 @@ func (x *SendCommandRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendCommandRequest.ProtoReflect.Descriptor instead.
 func (*SendCommandRequest) Descriptor() ([]byte, []int) {
-	return file_tinker_v1_server_proto_rawDescGZIP(), []int{6}
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *SendCommandRequest) GetServerId() string {
@@ -337,7 +962,7 @@ type SendCommandResponse struct {
 
 func (x *SendCommandResponse) Reset() {
 	*x = SendCommandResponse{}
-	mi := &file_tinker_v1_server_proto_msgTypes[7]
+	mi := &file_tinker_v1_server_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -349,7 +974,7 @@ func (x *SendCommandResponse) String() string {
 func (*SendCommandResponse) ProtoMessage() {}
 
 func (x *SendCommandResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_tinker_v1_server_proto_msgTypes[7]
+	mi := &file_tinker_v1_server_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -362,7 +987,7 @@ func (x *SendCommandResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendCommandResponse.ProtoReflect.Descriptor instead.
 func (*SendCommandResponse) Descriptor() ([]byte, []int) {
-	return file_tinker_v1_server_proto_rawDescGZIP(), []int{7}
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{17}
 }
 
 type WatchConsoleRequest struct {
@@ -374,7 +999,7 @@ type WatchConsoleRequest struct {
 
 func (x *WatchConsoleRequest) Reset() {
 	*x = WatchConsoleRequest{}
-	mi := &file_tinker_v1_server_proto_msgTypes[8]
+	mi := &file_tinker_v1_server_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -386,7 +1011,7 @@ func (x *WatchConsoleRequest) String() string {
 func (*WatchConsoleRequest) ProtoMessage() {}
 
 func (x *WatchConsoleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_tinker_v1_server_proto_msgTypes[8]
+	mi := &file_tinker_v1_server_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -399,7 +1024,7 @@ func (x *WatchConsoleRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WatchConsoleRequest.ProtoReflect.Descriptor instead.
 func (*WatchConsoleRequest) Descriptor() ([]byte, []int) {
-	return file_tinker_v1_server_proto_rawDescGZIP(), []int{8}
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *WatchConsoleRequest) GetServerId() string {
@@ -411,15 +1036,14 @@ func (x *WatchConsoleRequest) GetServerId() string {
 
 type WatchConsoleResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ServerId      string                 `protobuf:"bytes,1,opt,name=server_id,json=serverId,proto3" json:"server_id,omitempty"`
-	Line          string                 `protobuf:"bytes,2,opt,name=line,proto3" json:"line,omitempty"`
+	Line          string                 `protobuf:"bytes,1,opt,name=line,proto3" json:"line,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *WatchConsoleResponse) Reset() {
 	*x = WatchConsoleResponse{}
-	mi := &file_tinker_v1_server_proto_msgTypes[9]
+	mi := &file_tinker_v1_server_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -431,7 +1055,7 @@ func (x *WatchConsoleResponse) String() string {
 func (*WatchConsoleResponse) ProtoMessage() {}
 
 func (x *WatchConsoleResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_tinker_v1_server_proto_msgTypes[9]
+	mi := &file_tinker_v1_server_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -444,14 +1068,7 @@ func (x *WatchConsoleResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WatchConsoleResponse.ProtoReflect.Descriptor instead.
 func (*WatchConsoleResponse) Descriptor() ([]byte, []int) {
-	return file_tinker_v1_server_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *WatchConsoleResponse) GetServerId() string {
-	if x != nil {
-		return x.ServerId
-	}
-	return ""
+	return file_tinker_v1_server_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *WatchConsoleResponse) GetLine() string {
@@ -465,13 +1082,49 @@ var File_tinker_v1_server_proto protoreflect.FileDescriptor
 
 const file_tinker_v1_server_proto_rawDesc = "" +
 	"\n" +
-	"\x16tinker/v1/server.proto\x12\ttinker.v1\"5\n" +
+	"\x16tinker/v1/server.proto\x12\ttinker.v1\"\xbc\x01\n" +
+	"\x06Server\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12)\n" +
+	"\x04type\x18\x03 \x01(\x0e2\x15.tinker.v1.ServerTypeR\x04type\x12\x18\n" +
+	"\aversion\x18\x04 \x01(\tR\aversion\x12\x1b\n" +
+	"\tmemory_mb\x18\x05 \x01(\x05R\bmemoryMb\x12\x12\n" +
+	"\x04port\x18\x06 \x01(\x05R\x04port\x12\x18\n" +
+	"\arunning\x18\a \x01(\bR\arunning\"\x14\n" +
+	"\x12ListServersRequest\"B\n" +
+	"\x13ListServersResponse\x12+\n" +
+	"\aservers\x18\x01 \x03(\v2\x11.tinker.v1.ServerR\aservers\"\xc0\x01\n" +
+	"\x13CreateServerRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12)\n" +
+	"\x04type\x18\x02 \x01(\x0e2\x15.tinker.v1.ServerTypeR\x04type\x12\x18\n" +
+	"\aversion\x18\x03 \x01(\tR\aversion\x12\x1b\n" +
+	"\tmemory_mb\x18\x04 \x01(\x05R\bmemoryMb\x12\x12\n" +
+	"\x04port\x18\x05 \x01(\x05R\x04port\x12\x1f\n" +
+	"\vaccept_eula\x18\x06 \x01(\bR\n" +
+	"acceptEula\"A\n" +
+	"\x14CreateServerResponse\x12)\n" +
+	"\x06server\x18\x01 \x01(\v2\x11.tinker.v1.ServerR\x06server\"6\n" +
+	"\x1cFindImportableServersRequest\x12\x16\n" +
+	"\x06folder\x18\x01 \x01(\tR\x06folder\"\x8b\x01\n" +
+	"\x10ImportableServer\x12\x12\n" +
+	"\x04path\x18\x01 \x01(\tR\x04path\x12%\n" +
+	"\x0esuggested_name\x18\x02 \x01(\tR\rsuggestedName\x12\x10\n" +
+	"\x03jar\x18\x03 \x01(\tR\x03jar\x12\x12\n" +
+	"\x04port\x18\x04 \x01(\x05R\x04port\x12\x16\n" +
+	"\x06source\x18\x05 \x01(\tR\x06source\"V\n" +
+	"\x1dFindImportableServersResponse\x125\n" +
+	"\aservers\x18\x01 \x03(\v2\x1b.tinker.v1.ImportableServerR\aservers\"l\n" +
+	"\x13ImportServerRequest\x12\x12\n" +
+	"\x04path\x18\x01 \x01(\tR\x04path\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x10\n" +
+	"\x03jar\x18\x03 \x01(\tR\x03jar\x12\x1b\n" +
+	"\tmemory_mb\x18\x04 \x01(\x05R\bmemoryMb\"A\n" +
+	"\x14ImportServerResponse\x12)\n" +
+	"\x06server\x18\x01 \x01(\v2\x11.tinker.v1.ServerR\x06server\"5\n" +
 	"\x16GetServerStatusRequest\x12\x1b\n" +
-	"\tserver_id\x18\x01 \x01(\tR\bserverId\"U\n" +
-	"\x17GetServerStatusResponse\x12\x1b\n" +
-	"\tserver_id\x18\x01 \x01(\tR\bserverId\x12\x1d\n" +
-	"\n" +
-	"is_running\x18\x02 \x01(\bR\tisRunning\"1\n" +
+	"\tserver_id\x18\x01 \x01(\tR\bserverId\"3\n" +
+	"\x17GetServerStatusResponse\x12\x18\n" +
+	"\arunning\x18\x01 \x01(\bR\arunning\"1\n" +
 	"\x12StartServerRequest\x12\x1b\n" +
 	"\tserver_id\x18\x01 \x01(\tR\bserverId\"\x15\n" +
 	"\x13StartServerResponse\"0\n" +
@@ -483,11 +1136,21 @@ const file_tinker_v1_server_proto_rawDesc = "" +
 	"\acommand\x18\x02 \x01(\tR\acommand\"\x15\n" +
 	"\x13SendCommandResponse\"2\n" +
 	"\x13WatchConsoleRequest\x12\x1b\n" +
-	"\tserver_id\x18\x01 \x01(\tR\bserverId\"G\n" +
-	"\x14WatchConsoleResponse\x12\x1b\n" +
-	"\tserver_id\x18\x01 \x01(\tR\bserverId\x12\x12\n" +
-	"\x04line\x18\x02 \x01(\tR\x04line2\xa3\x03\n" +
-	"\rServerService\x12X\n" +
+	"\tserver_id\x18\x01 \x01(\tR\bserverId\"*\n" +
+	"\x14WatchConsoleResponse\x12\x12\n" +
+	"\x04line\x18\x01 \x01(\tR\x04line*\x88\x01\n" +
+	"\n" +
+	"ServerType\x12\x1b\n" +
+	"\x17SERVER_TYPE_UNSPECIFIED\x10\x00\x12\x17\n" +
+	"\x13SERVER_TYPE_VANILLA\x10\x01\x12\x15\n" +
+	"\x11SERVER_TYPE_PAPER\x10\x02\x12\x16\n" +
+	"\x12SERVER_TYPE_FABRIC\x10\x03\x12\x15\n" +
+	"\x11SERVER_TYPE_OTHER\x10\x042\xff\x05\n" +
+	"\rServerService\x12L\n" +
+	"\vListServers\x12\x1d.tinker.v1.ListServersRequest\x1a\x1e.tinker.v1.ListServersResponse\x12O\n" +
+	"\fCreateServer\x12\x1e.tinker.v1.CreateServerRequest\x1a\x1f.tinker.v1.CreateServerResponse\x12j\n" +
+	"\x15FindImportableServers\x12'.tinker.v1.FindImportableServersRequest\x1a(.tinker.v1.FindImportableServersResponse\x12O\n" +
+	"\fImportServer\x12\x1e.tinker.v1.ImportServerRequest\x1a\x1f.tinker.v1.ImportServerResponse\x12X\n" +
 	"\x0fGetServerStatus\x12!.tinker.v1.GetServerStatusRequest\x1a\".tinker.v1.GetServerStatusResponse\x12L\n" +
 	"\vStartServer\x12\x1d.tinker.v1.StartServerRequest\x1a\x1e.tinker.v1.StartServerResponse\x12I\n" +
 	"\n" +
@@ -509,35 +1172,61 @@ func file_tinker_v1_server_proto_rawDescGZIP() []byte {
 	return file_tinker_v1_server_proto_rawDescData
 }
 
-var file_tinker_v1_server_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_tinker_v1_server_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_tinker_v1_server_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_tinker_v1_server_proto_goTypes = []any{
-	(*GetServerStatusRequest)(nil),  // 0: tinker.v1.GetServerStatusRequest
-	(*GetServerStatusResponse)(nil), // 1: tinker.v1.GetServerStatusResponse
-	(*StartServerRequest)(nil),      // 2: tinker.v1.StartServerRequest
-	(*StartServerResponse)(nil),     // 3: tinker.v1.StartServerResponse
-	(*StopServerRequest)(nil),       // 4: tinker.v1.StopServerRequest
-	(*StopServerResponse)(nil),      // 5: tinker.v1.StopServerResponse
-	(*SendCommandRequest)(nil),      // 6: tinker.v1.SendCommandRequest
-	(*SendCommandResponse)(nil),     // 7: tinker.v1.SendCommandResponse
-	(*WatchConsoleRequest)(nil),     // 8: tinker.v1.WatchConsoleRequest
-	(*WatchConsoleResponse)(nil),    // 9: tinker.v1.WatchConsoleResponse
+	(ServerType)(0),                       // 0: tinker.v1.ServerType
+	(*Server)(nil),                        // 1: tinker.v1.Server
+	(*ListServersRequest)(nil),            // 2: tinker.v1.ListServersRequest
+	(*ListServersResponse)(nil),           // 3: tinker.v1.ListServersResponse
+	(*CreateServerRequest)(nil),           // 4: tinker.v1.CreateServerRequest
+	(*CreateServerResponse)(nil),          // 5: tinker.v1.CreateServerResponse
+	(*FindImportableServersRequest)(nil),  // 6: tinker.v1.FindImportableServersRequest
+	(*ImportableServer)(nil),              // 7: tinker.v1.ImportableServer
+	(*FindImportableServersResponse)(nil), // 8: tinker.v1.FindImportableServersResponse
+	(*ImportServerRequest)(nil),           // 9: tinker.v1.ImportServerRequest
+	(*ImportServerResponse)(nil),          // 10: tinker.v1.ImportServerResponse
+	(*GetServerStatusRequest)(nil),        // 11: tinker.v1.GetServerStatusRequest
+	(*GetServerStatusResponse)(nil),       // 12: tinker.v1.GetServerStatusResponse
+	(*StartServerRequest)(nil),            // 13: tinker.v1.StartServerRequest
+	(*StartServerResponse)(nil),           // 14: tinker.v1.StartServerResponse
+	(*StopServerRequest)(nil),             // 15: tinker.v1.StopServerRequest
+	(*StopServerResponse)(nil),            // 16: tinker.v1.StopServerResponse
+	(*SendCommandRequest)(nil),            // 17: tinker.v1.SendCommandRequest
+	(*SendCommandResponse)(nil),           // 18: tinker.v1.SendCommandResponse
+	(*WatchConsoleRequest)(nil),           // 19: tinker.v1.WatchConsoleRequest
+	(*WatchConsoleResponse)(nil),          // 20: tinker.v1.WatchConsoleResponse
 }
 var file_tinker_v1_server_proto_depIdxs = []int32{
-	0, // 0: tinker.v1.ServerService.GetServerStatus:input_type -> tinker.v1.GetServerStatusRequest
-	2, // 1: tinker.v1.ServerService.StartServer:input_type -> tinker.v1.StartServerRequest
-	4, // 2: tinker.v1.ServerService.StopServer:input_type -> tinker.v1.StopServerRequest
-	6, // 3: tinker.v1.ServerService.SendCommand:input_type -> tinker.v1.SendCommandRequest
-	8, // 4: tinker.v1.ServerService.WatchConsole:input_type -> tinker.v1.WatchConsoleRequest
-	1, // 5: tinker.v1.ServerService.GetServerStatus:output_type -> tinker.v1.GetServerStatusResponse
-	3, // 6: tinker.v1.ServerService.StartServer:output_type -> tinker.v1.StartServerResponse
-	5, // 7: tinker.v1.ServerService.StopServer:output_type -> tinker.v1.StopServerResponse
-	7, // 8: tinker.v1.ServerService.SendCommand:output_type -> tinker.v1.SendCommandResponse
-	9, // 9: tinker.v1.ServerService.WatchConsole:output_type -> tinker.v1.WatchConsoleResponse
-	5, // [5:10] is the sub-list for method output_type
-	0, // [0:5] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: tinker.v1.Server.type:type_name -> tinker.v1.ServerType
+	1,  // 1: tinker.v1.ListServersResponse.servers:type_name -> tinker.v1.Server
+	0,  // 2: tinker.v1.CreateServerRequest.type:type_name -> tinker.v1.ServerType
+	1,  // 3: tinker.v1.CreateServerResponse.server:type_name -> tinker.v1.Server
+	7,  // 4: tinker.v1.FindImportableServersResponse.servers:type_name -> tinker.v1.ImportableServer
+	1,  // 5: tinker.v1.ImportServerResponse.server:type_name -> tinker.v1.Server
+	2,  // 6: tinker.v1.ServerService.ListServers:input_type -> tinker.v1.ListServersRequest
+	4,  // 7: tinker.v1.ServerService.CreateServer:input_type -> tinker.v1.CreateServerRequest
+	6,  // 8: tinker.v1.ServerService.FindImportableServers:input_type -> tinker.v1.FindImportableServersRequest
+	9,  // 9: tinker.v1.ServerService.ImportServer:input_type -> tinker.v1.ImportServerRequest
+	11, // 10: tinker.v1.ServerService.GetServerStatus:input_type -> tinker.v1.GetServerStatusRequest
+	13, // 11: tinker.v1.ServerService.StartServer:input_type -> tinker.v1.StartServerRequest
+	15, // 12: tinker.v1.ServerService.StopServer:input_type -> tinker.v1.StopServerRequest
+	17, // 13: tinker.v1.ServerService.SendCommand:input_type -> tinker.v1.SendCommandRequest
+	19, // 14: tinker.v1.ServerService.WatchConsole:input_type -> tinker.v1.WatchConsoleRequest
+	3,  // 15: tinker.v1.ServerService.ListServers:output_type -> tinker.v1.ListServersResponse
+	5,  // 16: tinker.v1.ServerService.CreateServer:output_type -> tinker.v1.CreateServerResponse
+	8,  // 17: tinker.v1.ServerService.FindImportableServers:output_type -> tinker.v1.FindImportableServersResponse
+	10, // 18: tinker.v1.ServerService.ImportServer:output_type -> tinker.v1.ImportServerResponse
+	12, // 19: tinker.v1.ServerService.GetServerStatus:output_type -> tinker.v1.GetServerStatusResponse
+	14, // 20: tinker.v1.ServerService.StartServer:output_type -> tinker.v1.StartServerResponse
+	16, // 21: tinker.v1.ServerService.StopServer:output_type -> tinker.v1.StopServerResponse
+	18, // 22: tinker.v1.ServerService.SendCommand:output_type -> tinker.v1.SendCommandResponse
+	20, // 23: tinker.v1.ServerService.WatchConsole:output_type -> tinker.v1.WatchConsoleResponse
+	15, // [15:24] is the sub-list for method output_type
+	6,  // [6:15] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_tinker_v1_server_proto_init() }
@@ -550,13 +1239,14 @@ func file_tinker_v1_server_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tinker_v1_server_proto_rawDesc), len(file_tinker_v1_server_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   10,
+			NumEnums:      1,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_tinker_v1_server_proto_goTypes,
 		DependencyIndexes: file_tinker_v1_server_proto_depIdxs,
+		EnumInfos:         file_tinker_v1_server_proto_enumTypes,
 		MessageInfos:      file_tinker_v1_server_proto_msgTypes,
 	}.Build()
 	File_tinker_v1_server_proto = out.File
