@@ -1,0 +1,42 @@
+syntax = "proto3";
+package tinker.v1;
+
+// Everything to do with running the MC Servers
+service ServerService {
+    rpc GetServerStatus(GetServerStatusRequest) returns (GetServerStatusResponse);
+    rpc StartServer(StartServerRequest) returns (StartServerResponse);
+    rpc StopServer(StopServerRequest) returns (StopServerResponse);
+    rpc SendCommand(SendCommandRequest) returns (SendCommandResponse);
+    rpc WatchConsole(WatchConsoleRequest) returns (stream WatchConsoleResponse);
+}
+
+message GetServerStatusRequest {
+    string server_id = 1;
+}
+message GetServerStatusResponse {
+    string server_id = 1;
+    bool is_running = 2;
+}
+
+message StartServerRequest {
+    string server_id = 1;
+}
+message StartServerResponse {}
+
+message StopServerRequest {
+    string server_id = 1;
+}
+message StopServerResponse {}
+
+message SendCommandRequest {
+    string server_id = 1;
+    string command = 2;
+}
+message SendCommandResponse {}
+
+message WatchConsoleRequest {
+    string server_id = 1;
+}
+message WatchConsoleResponse {
+    string server_id = 1;
+}
