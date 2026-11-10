@@ -1,4 +1,3 @@
-```bash
 #!/usr/bin/env bash
 # =====================================================================
 #  ONE command to install or update the Agent on the server PC.
@@ -29,7 +28,7 @@ command -v ssh >/dev/null || die "ssh isn't installed. On Windows, run this from
 SSH_OPTS=(-o ControlMaster=auto -o ControlPath="/tmp/tinker-ssh-%r@%h-%p" -o ControlPersist=120)
 case "$(uname -s)" in MINGW* | MSYS* | CYGWIN*) SSH_OPTS=() ;; esac # Windows can't reuse
 
-say "Connecting to $TARGET… (if it asks for a password, type it and press Enter: nothing shows while you type)"
+say "Connecting to ${TARGET}… (if it asks for a password, type it and press Enter: nothing shows while you type)"
 MACHINE="$(ssh "${SSH_OPTS[@]}" -o ConnectTimeout=10 "$TARGET" uname -m)" \
   || die "Couldn't log in to $TARGET over SSH. Check the IP and username, and that 'ssh $TARGET' works on its own."
 case "$MACHINE" in
@@ -46,9 +45,8 @@ GOOS=linux GOARCH="$ARCH" CGO_ENABLED=0 go build -o dist/tinker-agent ./cmd/tink
 # bash on Linux. Send a cleaned copy of install.sh.
 tr -d '\r' < scripts/install.sh > dist/install.sh
 
-say "Copying it to $TARGET…"
+say "Copying it to ${TARGET}…"
 scp "${SSH_OPTS[@]}" -q dist/tinker-agent dist/install.sh "$TARGET":/tmp/
 
 say "Installing on the server (it may ask for the server's password again, for sudo)…"
 ssh "${SSH_OPTS[@]}" -t "$TARGET" "sudo bash /tmp/install.sh /tmp/tinker-agent"
-```

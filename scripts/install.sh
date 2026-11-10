@@ -1,4 +1,3 @@
-```bash
 #!/usr/bin/env bash
 # =====================================================================
 #  Tinker Agent installer: sets up EVERYTHING on the Linux server PC.
@@ -182,4 +181,3 @@ cat <<EOF
   └────────────────────────────────────────────────────────────┘
 
 EOF
-```
