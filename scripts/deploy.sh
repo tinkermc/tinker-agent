@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # =====================================================================
 #  ONE command to install or update the Agent on the server PC.
-#  Run it from the tinker-agent folder:
+#  Run it from a checkout, or download this file and run it directly:
 #
 #      Mac:                ./scripts/deploy.sh USER@SERVER_IP
 #      Windows (Git Bash): ./scripts/deploy.sh USER@SERVER_IP
 #
-#  It builds the Agent, copies it to the server, and runs install.sh
-#  there (Java, service, token, firewall, everything).
+#  When run by itself, it fetches the source from GitHub, builds the
+#  Agent, copies it to the server, and runs install.sh there.
 # =====================================================================
 set -euo pipefail
 
@@ -19,10 +19,25 @@ if [ -z "$TARGET" ]; then
   echo "Usage: ./scripts/deploy.sh USER@SERVER_IP   (for example theo@192.168.1.50)"
   exit 1
 fi
-cd "$(dirname "$0")/.." # always work from the repo root
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -f "$SCRIPT_DIR/../go.mod" ] && [ -d "$SCRIPT_DIR/../cmd/tinker-agent" ] \
+    && [ -f "$SCRIPT_DIR/../scripts/install.sh" ]; then
+  REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+else
+  command -v git >/dev/null || die "git isn't installed; it is needed to download the Agent source."
+  TEMP_DIR="$(mktemp -d)" || die "Couldn't create a temporary directory to download the Agent source."
+  trap 'rm -rf "$TEMP_DIR"' EXIT
+  REPO_ROOT="$TEMP_DIR/tinker-agent"
+  say "Downloading the Agent source from GitHub…"
+  git clone --depth 1 https://github.com/tinkermc/tinker-agent.git "$REPO_ROOT" \
+    || die "Couldn't download the source from GitHub. Check your internet connection."
+fi
+cd "$REPO_ROOT"
 
 command -v go >/dev/null || die "Go isn't installed (or the terminal can't find it). Run: go version"
 command -v ssh >/dev/null || die "ssh isn't installed. On Windows, run this from Git Bash."
+command -v scp >/dev/null || die "scp isn't installed. On Windows, run this from Git Bash."
 
 # Reuse one SSH connection, so you only type the server password once.
 SSH_OPTS=(-o ControlMaster=auto -o ControlPath="/tmp/tinker-ssh-%r@%h-%p" -o ControlPersist=120)
