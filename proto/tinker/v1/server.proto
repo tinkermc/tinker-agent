@@ -1,0 +1,109 @@
+syntax = "proto3";
+package tinker.v1;
+
+// Everything to do with Minecraft servers.
+service ServerService {
+  // --- New in Part 2 ---
+  rpc ListServers(ListServersRequest) returns (ListServersResponse);
+  rpc CreateServer(CreateServerRequest) returns (CreateServerResponse);
+  rpc FindImportableServers(FindImportableServersRequest) returns (FindImportableServersResponse);
+  rpc ImportServer(ImportServerRequest) returns (ImportServerResponse);
+
+  // --- From Part 1 (unchanged) ---
+  rpc GetServerStatus(GetServerStatusRequest) returns (GetServerStatusResponse);
+  rpc StartServer(StartServerRequest) returns (StartServerResponse);
+  rpc StopServer(StopServerRequest) returns (StopServerResponse);
+  rpc SendCommand(SendCommandRequest) returns (SendCommandResponse);
+  rpc WatchConsole(WatchConsoleRequest) returns (stream WatchConsoleResponse);
+}
+
+// Which kind of Minecraft server it is.
+enum ServerType {
+  SERVER_TYPE_UNSPECIFIED = 0;
+  SERVER_TYPE_VANILLA = 1; // Mojang's official server
+  SERVER_TYPE_PAPER = 2; // faster, supports plugins
+  SERVER_TYPE_FABRIC = 3; // supports Fabric mods
+  SERVER_TYPE_OTHER = 4; // imported, and we couldn't tell
+}
+
+// One Minecraft server, as Dash sees it.
+message Server {
+  string id = 1; // folder name, like "survival"
+  string name = 2; // display name, like "Survival World"
+  ServerType type = 3;
+  string version = 4; // like "26.3" (empty if unknown)
+  int32 memory_mb = 5; // max RAM for Java
+  int32 port = 6; // the port players join on
+  bool running = 7;
+}
+
+message ListServersRequest {}
+message ListServersResponse {
+  repeated Server servers = 1;
+}
+
+message CreateServerRequest {
+  string name = 1;
+  ServerType type = 2; // unspecified = vanilla
+  string version = 3; // empty = latest release
+  int32 memory_mb = 4; // 0 = 2048
+  int32 port = 5; // 0 = first free port from 25565
+  bool accept_eula = 6; // the user ticked "I agree to the Minecraft EULA"
+}
+message CreateServerResponse {
+  Server server = 1;
+}
+
+message FindImportableServersRequest {
+  string folder = 1; // empty = look where Crafty Controller keeps servers
+}
+message ImportableServer {
+  string path = 1; // full folder path on the server PC
+  string suggested_name = 2;
+  string jar = 3; // the jar we think starts it
+  int32 port = 4;
+  string source = 5; // "crafty" or "folder"
+}
+message FindImportableServersResponse {
+  repeated ImportableServer servers = 1;
+}
+
+message ImportServerRequest {
+  string path = 1; // from FindImportableServers
+  string name = 2;
+  string jar = 3; // empty = the one we detected
+  int32 memory_mb = 4; // 0 = 2048
+}
+message ImportServerResponse {
+  Server server = 1;
+}
+
+message GetServerStatusRequest {
+  string server_id = 1;
+}
+message GetServerStatusResponse {
+  bool running = 1;
+}
+
+message StartServerRequest {
+  string server_id = 1;
+}
+message StartServerResponse {}
+
+message StopServerRequest {
+  string server_id = 1;
+}
+message StopServerResponse {}
+
+message SendCommandRequest {
+  string server_id = 1;
+  string command = 2;
+}
+message SendCommandResponse {}
+
+message WatchConsoleRequest {
+  string server_id = 1;
+}
+message WatchConsoleResponse {
+  string line = 1;
+}

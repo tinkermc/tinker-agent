@@ -1,0 +1,1 @@
+// Every time I add something I need to regenerate using `buf lint; buf generate`
