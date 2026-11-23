@@ -6,6 +6,7 @@
 #  copies it over and runs it. To run it by hand on the server:
 #      sudo bash install.sh /path/to/tinker-agent
 #
+#  Supports Debian/Ubuntu (apt) and Arch-based distributions (pacman).
 #  Safe to run again: it updates the Agent and keeps your token,
 #  settings and Minecraft servers.
 # =====================================================================
@@ -20,7 +21,13 @@ die()  { printf '\n\033[1;31mERROR:\033[0m %s\n' "$*" >&2; exit 1; }
 
 BINARY="${1:-$(dirname "$0")/tinker-agent}"
 [ -f "$BINARY" ] || die "Can't find the tinker-agent program at $BINARY"
-command -v apt-get >/dev/null || die "This installer only supports Ubuntu/Debian for now."
+if command -v apt-get >/dev/null; then
+  PKG_MANAGER=apt
+elif command -v pacman >/dev/null; then
+  PKG_MANAGER=pacman
+else
+  die "Supported package managers are apt-get (Debian/Ubuntu) and pacman (Arch/CachyOS)."
+fi
 command -v systemctl >/dev/null || die "systemd is required."
 
 # The Agent runs as your normal user (not root), the same as in Part 1.
@@ -36,8 +43,12 @@ PORT=7122
 
 # ---- 1. Tools + Java 25 ---------------------------------------------
 say "Installing tools (curl)…"
-apt-get update -qq
-apt-get install -y -qq curl ca-certificates >/dev/null
+if [ "$PKG_MANAGER" = apt ]; then
+  apt-get update -qq
+  apt-get install -y -qq curl ca-certificates >/dev/null
+else
+  pacman -Syu --needed --noconfirm curl ca-certificates
+fi
 
 # Prints the major version of a java program, like 25.
 java_major() { "$1" -version 2>&1 | sed -n 's/.* version "\([0-9]*\).*/\1/p' | head -n1; }
@@ -59,16 +70,20 @@ if JAVA_BIN="$(find_java)"; then
   say "Java $(java_major "$JAVA_BIN") is already installed"
 else
   say "Installing Java 25 (Minecraft 26.x needs it)… this can take a few minutes"
-  if ! apt-get install -y -qq openjdk-25-jre-headless >/dev/null 2>&1; then
-    say "Ubuntu doesn't offer Java 25 here, so using Eclipse Temurin instead…"
-    apt-get install -y -qq gpg >/dev/null
-    curl -fsSL https://packages.adoptium.net/artifactory/api/gpg/key/public \
-      | gpg --dearmor --yes -o /usr/share/keyrings/adoptium.gpg
-    CODENAME="$(. /etc/os-release && echo "${VERSION_CODENAME:-}")"
-    echo "deb [signed-by=/usr/share/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb $CODENAME main" \
-      > /etc/apt/sources.list.d/adoptium.list
-    apt-get update -qq
-    apt-get install -y -qq temurin-25-jre >/dev/null
+  if [ "$PKG_MANAGER" = apt ]; then
+    if ! apt-get install -y -qq openjdk-25-jre-headless >/dev/null 2>&1; then
+      say "Java 25 isn't available in the configured repositories, so using Eclipse Temurin instead…"
+      apt-get install -y -qq gpg >/dev/null
+      curl -fsSL https://packages.adoptium.net/artifactory/api/gpg/key/public \
+        | gpg --dearmor --yes -o /usr/share/keyrings/adoptium.gpg
+      CODENAME="$(. /etc/os-release && echo "${VERSION_CODENAME:-}")"
+      echo "deb [signed-by=/usr/share/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb $CODENAME main" \
+        > /etc/apt/sources.list.d/adoptium.list
+      apt-get update -qq
+      apt-get install -y -qq temurin-25-jre >/dev/null
+    fi
+  else
+    pacman -S --needed --noconfirm jre-openjdk-headless
   fi
   JAVA_BIN="$(find_java)" || die "Java 25 didn't install. Paste this whole output to the Tinker team."
   say "Installed Java $(java_major "$JAVA_BIN")"
